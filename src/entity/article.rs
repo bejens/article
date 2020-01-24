@@ -1,17 +1,11 @@
-use rustorm::{
-    FromDao,
-    ToColumnNames,
-    ToTableName,
-    ToDao,
-    rustorm_dao
-};
+use rustorm::{rustorm_dao, FromDao, ToColumnNames, ToDao, ToTableName};
 
-#[derive(Serialize, Deserialize, Debug, FromDao, ToColumnNames, ToTableName, ToDao)]
+#[derive(Serialize, Deserialize, Clone, Debug, FromDao, ToColumnNames, ToTableName, ToDao)]
 pub struct Article {
     pub id: Option<i64>,
     pub title: String,
     pub keyword: String,
-    pub article_type: i64,
+    pub article_type: i32,
     pub describe: String,
     pub cover: String,
     pub content: String,

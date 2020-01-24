@@ -1,21 +1,20 @@
-use chrono::Utc;
-use crate::entity::article::Article;
 use crate::dao::article_dao::ArticleDao;
+use crate::entity::article::Article;
 use crate::util::snowflake;
+use chrono::Utc;
 
-
-pub trait ArticleService{
+pub trait ArticleService {
     fn create(article: Article) -> Result<Article, String>;
 }
 
-pub struct ArticleServiceImpl{}
+pub struct ArticleServiceImpl {}
 
 impl ArticleService for ArticleServiceImpl {
-
     fn create(mut article: Article) -> Result<Article, String> {
         article.id = snowflake::id();
         article.create_time = Option::from(Utc::now().timestamp());
         article.modify_time = article.create_time;
+        article.creator = Option::from(12345_i64);
         article.modifier = article.creator;
         ArticleDao::insert(article)
     }
