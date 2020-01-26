@@ -5,6 +5,7 @@ use chrono::Utc;
 
 pub trait ArticleService {
     fn create(article: Article) -> Result<Article, String>;
+    fn get(id: i64) -> Result<Article, String>;
 }
 
 pub struct ArticleServiceImpl {}
@@ -17,5 +18,9 @@ impl ArticleService for ArticleServiceImpl {
         article.creator = Option::from(12345_i64);
         article.modifier = article.creator;
         ArticleDao::insert(article)
+    }
+
+    fn get(id: i64) -> Result<Article, String> {
+        ArticleDao::get(id)
     }
 }

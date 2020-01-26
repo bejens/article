@@ -14,6 +14,9 @@ mod util;
 
 fn main() {
     rocket::ignite()
-        .mount("/article", routes![api::article_api::create])
+        .mount(
+            "/article",
+            routes![api::article_api::create, api::article_api::get],
+        )
         .launch();
 }
