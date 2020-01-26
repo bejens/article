@@ -34,9 +34,21 @@ impl ArticleDao {
         let mut em = client::connect();
         let (sql, mut params) = ArticleDao::build_sql(&article);
         params.push(&article.id);
-        println!("{}", sql);
         let article_result: Result<Article, DbError> =
             em.execute_sql_with_one_return(&sql, &params);
+        match article_result {
+            Ok(data) => Ok(data),
+            Err(err) => {
+                println!("{:?}", err);
+                Err("db error".to_string())
+            }
+        }
+    }
+
+    pub fn delete(id: i64) -> Result<Article, String> {
+        let mut em = client::connect();
+        let sql = "DELETE FROM article WHERE id = $1 RETURNING *";
+        let article_result: Result<Article, DbError> = em.execute_sql_with_one_return(&sql, &[&id]);
         match article_result {
             Ok(data) => Ok(data),
             Err(err) => {
@@ -80,7 +92,7 @@ impl ArticleDao {
             params.push(&article.content);
         };
 
-        let suffix_sql = " RETURNING id, title, keyword, article_type, describe, cover, content, create_time, creator, modify_time, modifier";
+        let suffix_sql = " RETURNING *";
 
         let s = prefix_sql
             + &sql.join(",")

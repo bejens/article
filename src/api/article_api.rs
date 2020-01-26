@@ -20,3 +20,9 @@ pub fn update(id: i64, article: Json<Article>) -> Json<Result<Article, String>> 
     let result = article_service::ArticleServiceImpl::update(id, article.0);
     return Json(result);
 }
+
+#[delete("/<id>")]
+pub fn delete(id: i64) -> Json<Result<Article, String>> {
+    let result = article_service::ArticleServiceImpl::delete(id);
+    return Json(result);
+}

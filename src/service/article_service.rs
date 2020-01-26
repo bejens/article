@@ -7,6 +7,7 @@ pub trait ArticleService {
     fn create(article: Article) -> Result<Article, String>;
     fn get(id: i64) -> Result<Article, String>;
     fn update(id: i64, article: Article) -> Result<Article, String>;
+    fn delete(id: i64) -> Result<Article, String>;
 }
 
 pub struct ArticleServiceImpl {}
@@ -28,5 +29,9 @@ impl ArticleService for ArticleServiceImpl {
     fn update(id: i64, mut article: Article) -> Result<Article, String> {
         article.id = Option::from(id);
         ArticleDao::update(article)
+    }
+
+    fn delete(id: i64) -> Result<Article, String> {
+        ArticleDao::delete(id)
     }
 }

@@ -19,7 +19,8 @@ fn main() {
             routes![
                 api::article_api::create,
                 api::article_api::get,
-                api::article_api::update
+                api::article_api::update,
+                api::article_api::delete
             ],
         )
         .launch();
