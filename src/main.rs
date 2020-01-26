@@ -16,7 +16,11 @@ fn main() {
     rocket::ignite()
         .mount(
             "/article",
-            routes![api::article_api::create, api::article_api::get],
+            routes![
+                api::article_api::create,
+                api::article_api::get,
+                api::article_api::update
+            ],
         )
         .launch();
 }

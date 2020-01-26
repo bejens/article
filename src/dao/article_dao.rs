@@ -29,4 +29,63 @@ impl ArticleDao {
             }
         }
     }
+
+    pub fn update(article: Article) -> Result<Article, String> {
+        let mut em = client::connect();
+        let (sql, mut params) = ArticleDao::build_sql(&article);
+        params.push(&article.id);
+        println!("{}", sql);
+        let article_result: Result<Article, DbError> =
+            em.execute_sql_with_one_return(&sql, &params);
+        match article_result {
+            Ok(data) => Ok(data),
+            Err(err) => {
+                println!("{:?}", err);
+                Err("db error".to_string())
+            }
+        }
+    }
+
+    fn build_sql(article: &Article) -> (String, Vec<&dyn rustorm::ToValue>) {
+        let mut order = 0;
+
+        let prefix_sql = "UPDATE article SET ".to_string();
+        let mut sql: Vec<String> = vec![];
+
+        let mut params: Vec<&dyn rustorm::ToValue> = vec![];
+
+        if article.title != "" {
+            order += 1;
+            sql.push(format!("title = ${}", order));
+            params.push(&article.title);
+        };
+        if article.keyword != "" {
+            order += 1;
+            sql.push(format!("keyword = ${}", order));
+            params.push(&article.keyword);
+        };
+        if article.describe != "" {
+            order += 1;
+            sql.push(format!("describe = ${}", order));
+            params.push(&article.describe);
+        };
+        if article.cover != "" {
+            order += 1;
+            sql.push(format!("cover = ${}", order));
+            params.push(&article.cover);
+        };
+        if article.content != "" {
+            order += 1;
+            sql.push(format!("content = ${}", order));
+            params.push(&article.content);
+        };
+
+        let suffix_sql = " RETURNING id, title, keyword, article_type, describe, cover, content, create_time, creator, modify_time, modifier";
+
+        let s = prefix_sql
+            + &sql.join(",")
+            + format!(" WHERE id = ${}", order + 1).as_ref()
+            + suffix_sql;
+        (s, params)
+    }
 }
