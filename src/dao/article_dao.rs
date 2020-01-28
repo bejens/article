@@ -1,25 +1,26 @@
 use crate::client;
 use crate::entity::article::*;
 use crate::entity::page::*;
+use crate::errors::article_error::ArticleError;
 use rocket::request::Form;
 use rustorm::DbError;
 
 pub struct ArticleDao {}
 
 impl ArticleDao {
-    pub fn insert(article: Article) -> Result<Article, String> {
+    pub fn insert(article: Article) -> Result<Article, ArticleError> {
         let mut em = client::connect();
         let article_result: Result<(), DbError> = em.single_insert(&article);
         match article_result {
             Ok(_data) => Ok(article),
             Err(err) => {
                 println!("{:?}", err);
-                Err("db error".to_string())
+                Err(ArticleError::from_error(&err))
             }
         }
     }
 
-    pub fn get(id: i64) -> Result<Article, String> {
+    pub fn get(id: i64) -> Result<Article, ArticleError> {
         let mut em = client::connect();
         let sql = "SELECT * FROM article WHERE id = $1";
         let article_result: Result<Article, DbError> = em.execute_sql_with_one_return(sql, &[&id]);
@@ -27,12 +28,12 @@ impl ArticleDao {
             Ok(data) => Ok(data),
             Err(err) => {
                 println!("{:?}", err);
-                Err("db error".to_string())
+                Err(ArticleError::from_error(&err))
             }
         }
     }
 
-    pub fn list(params: Form<ArticleListParams>) -> Result<Page<Article>, String> {
+    pub fn list(params: Form<ArticleListParams>) -> Result<Page<Article>, ArticleError> {
         let mut em = client::connect();
         let (sql, count_sql, sql_param) = ArticleDao::build_list_sql(&params.0);
         let article_result: Result<Vec<Article>, DbError> =
@@ -46,21 +47,21 @@ impl ArticleDao {
         match article_result {
             Err(err) => {
                 println!("{:?}", err);
-                return Err("db error".to_string());
+                return Err(ArticleError::from_error(&err))
             }
             Ok(data) => result.data = data,
         }
         match count {
             Err(err) => {
                 println!("{:?}", err);
-                return Err("db error".to_string());
+                return Err(ArticleError::from_error(&err))
             }
             Ok(total) => result.total = total.count,
         }
         Ok(result)
     }
 
-    pub fn update(article: Article) -> Result<Article, String> {
+    pub fn update(article: Article) -> Result<Article, ArticleError> {
         let mut em = client::connect();
         let (sql, mut params) = ArticleDao::build_sql(&article);
         params.push(&article.id);
@@ -70,12 +71,12 @@ impl ArticleDao {
             Ok(data) => Ok(data),
             Err(err) => {
                 println!("{:?}", err);
-                Err("db error".to_string())
+                Err(ArticleError::from_error(&err))
             }
         }
     }
 
-    pub fn delete(id: i64) -> Result<Article, String> {
+    pub fn delete(id: i64) -> Result<Article, ArticleError> {
         let mut em = client::connect();
         let sql = "DELETE FROM article WHERE id = $1 RETURNING *";
         let article_result: Result<Article, DbError> = em.execute_sql_with_one_return(&sql, &[&id]);
@@ -83,7 +84,7 @@ impl ArticleDao {
             Ok(data) => Ok(data),
             Err(err) => {
                 println!("{:?}", err);
-                Err("db error".to_string())
+                Err(ArticleError::from_error(&err))
             }
         }
     }

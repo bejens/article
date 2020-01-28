@@ -10,6 +10,7 @@ mod client;
 mod dao;
 mod entity;
 mod service;
+mod errors;
 mod util;
 
 fn main() {
