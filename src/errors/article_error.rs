@@ -15,12 +15,12 @@ impl ArticleError {
         }
     }
 
-    pub fn from_string(err_msg: String) -> ArticleError {
-        ArticleError{
-            code: 500,
-            message: err_msg
-        }
-    }
+    // pub fn from_string(err_msg: String) -> ArticleError {
+    //     ArticleError{
+    //         code: 500,
+    //         message: err_msg
+    //     }
+    // }
 }
 
 impl fmt::Display for ArticleError {
