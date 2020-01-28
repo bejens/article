@@ -20,7 +20,8 @@ fn main() {
                 api::article_api::create,
                 api::article_api::get,
                 api::article_api::update,
-                api::article_api::delete
+                api::article_api::delete,
+                api::article_api::list
             ],
         )
         .launch();

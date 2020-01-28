@@ -1,11 +1,15 @@
 use crate::dao::article_dao::ArticleDao;
 use crate::entity::article::Article;
 use crate::util::snowflake;
+use crate::entity::article::ArticleListParams;
+use crate::entity::page::Page;
+use rocket::request::Form;
 use chrono::Utc;
 
 pub trait ArticleService {
     fn create(article: Article) -> Result<Article, String>;
     fn get(id: i64) -> Result<Article, String>;
+    fn list(params: Form<ArticleListParams>) -> Result<Page<Article>, String>;
     fn update(id: i64, article: Article) -> Result<Article, String>;
     fn delete(id: i64) -> Result<Article, String>;
 }
@@ -24,6 +28,10 @@ impl ArticleService for ArticleServiceImpl {
 
     fn get(id: i64) -> Result<Article, String> {
         ArticleDao::get(id)
+    }
+
+    fn list(params: Form<ArticleListParams>) -> Result<Page<Article>, String> {
+        ArticleDao::list(params)
     }
 
     fn update(id: i64, mut article: Article) -> Result<Article, String> {
