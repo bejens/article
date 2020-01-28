@@ -47,14 +47,14 @@ impl ArticleDao {
         match article_result {
             Err(err) => {
                 println!("{:?}", err);
-                return Err(ArticleError::from_error(&err))
+                return Err(ArticleError::from_error(&err));
             }
             Ok(data) => result.data = data,
         }
         match count {
             Err(err) => {
                 println!("{:?}", err);
-                return Err(ArticleError::from_error(&err))
+                return Err(ArticleError::from_error(&err));
             }
             Ok(total) => result.total = total.count,
         }

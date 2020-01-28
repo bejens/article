@@ -1,12 +1,11 @@
 use crate::entity::article::Article;
 use crate::entity::article::ArticleListParams;
 use crate::entity::page::Page;
+use crate::errors::article_error::ArticleError;
 use crate::service::article_service;
 use crate::service::article_service::ArticleService;
-use crate::errors::article_error::ArticleError;
-use rocket_contrib::json::Json;
 use rocket::request::Form;
-
+use rocket_contrib::json::Json;
 
 #[post("/", format = "json", data = "<article>")]
 pub fn create(article: Json<Article>) -> Json<Result<Article, ArticleError>> {
@@ -17,7 +16,7 @@ pub fn create(article: Json<Article>) -> Json<Result<Article, ArticleError>> {
 #[get("/?<params..>")]
 pub fn list(params: Form<ArticleListParams>) -> Json<Result<Page<Article>, ArticleError>> {
     let result = article_service::ArticleServiceImpl::list(params);
-    return Json(result)
+    return Json(result);
 }
 
 #[get("/<id>")]

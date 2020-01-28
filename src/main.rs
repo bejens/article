@@ -9,8 +9,8 @@ mod api;
 mod client;
 mod dao;
 mod entity;
-mod service;
 mod errors;
+mod service;
 mod util;
 
 fn main() {

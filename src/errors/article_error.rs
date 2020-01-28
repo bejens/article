@@ -1,17 +1,17 @@
-use std::fmt;
 use std::error;
+use std::fmt;
 
 #[derive(Serialize, Debug, Clone)]
 pub struct ArticleError {
     pub code: i64,
-    pub message: String
+    pub message: String,
 }
 
 impl ArticleError {
     pub fn from_error(err: &dyn error::Error) -> ArticleError {
-        ArticleError{
+        ArticleError {
             code: 500,
-            message: err.to_string()
+            message: err.to_string(),
         }
     }
 
@@ -25,7 +25,6 @@ impl ArticleError {
 
 impl fmt::Display for ArticleError {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f,"{}", self.message)
+        write!(f, "{}", self.message)
     }
 }
-

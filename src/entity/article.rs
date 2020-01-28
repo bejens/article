@@ -22,5 +22,5 @@ pub struct ArticleListParams {
     pub title: Option<String>,
     pub describe: Option<String>,
     pub content: Option<String>,
-    pub article_type: Option<i32>
+    pub article_type: Option<i32>,
 }

@@ -10,13 +10,11 @@ pub fn id() -> Option<i64> {
 
 // singleton
 fn get_instance() -> Arc<Mutex<Snowflake>> {
-
     static mut SINGLETON: Option<Arc<Mutex<Snowflake>>> = None;
 
     unsafe {
-        SINGLETON.get_or_insert_with( || {
-            Arc::new(Mutex::new(Snowflake::kubernetes()))
-        }).clone()
+        SINGLETON
+            .get_or_insert_with(|| Arc::new(Mutex::new(Snowflake::kubernetes())))
+            .clone()
     }
 }
-
