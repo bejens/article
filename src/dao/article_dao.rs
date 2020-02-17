@@ -2,7 +2,6 @@ use crate::client;
 use crate::entity::article::*;
 use crate::entity::page::*;
 use crate::errors::article_error::ArticleError;
-use rocket::request::Form;
 use rustorm::DbError;
 
 pub struct ArticleDao {}
@@ -33,15 +32,15 @@ impl ArticleDao {
         }
     }
 
-    pub fn list(params: Form<ArticleListParams>) -> Result<Page<Article>, ArticleError> {
+    pub fn list(params: ArticleListParams) -> Result<Page<Article>, ArticleError> {
         let mut em = client::connect();
-        let (sql, count_sql, sql_param) = ArticleDao::build_list_sql(&params.0);
+        let (sql, count_sql, sql_param) = ArticleDao::build_list_sql(&params);
         let article_result: Result<Vec<Article>, DbError> =
             em.execute_sql_with_return(&sql, &sql_param);
         let count: Result<Count, DbError> = em.execute_sql_with_one_return(&count_sql, &sql_param);
         let mut result: Page<Article> = Page {
             total: 0,
-            size: params.0.size,
+            size: params.size,
             data: vec![],
         };
         match article_result {

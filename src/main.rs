@@ -1,7 +1,7 @@
-#![feature(proc_macro_hygiene, decl_macro)]
+use actix_web::{App, web, HttpServer};
+use actix_web::middleware::Logger;
+use env_logger;
 
-#[macro_use]
-extern crate rocket;
 #[macro_use]
 extern crate serde_derive;
 
@@ -13,17 +13,30 @@ mod errors;
 mod service;
 mod util;
 
-fn main() {
-    rocket::ignite()
-        .mount(
-            "/article",
-            routes![
-                api::article_api::create,
-                api::article_api::get,
-                api::article_api::update,
-                api::article_api::delete,
-                api::article_api::list
-            ],
-        )
-        .launch();
+#[actix_rt::main]
+async fn main() -> std::io::Result<()> {
+
+    std::env::set_var("RUST_LOG", "actix_web=info");
+    env_logger::init();
+
+    HttpServer::new(|| {
+        App::new()
+            .wrap(Logger::default())
+            .wrap(Logger::new("%a %t %s %{User-Agent}i"))
+            .service(
+                web::scope("/api/v1")
+                    .service(web::scope("/articles").configure(articles_router))
+            )
+    })
+        .bind("127.0.0.1:8080")?
+        .run()
+        .await
+}
+
+fn articles_router(cfg: &mut web::ServiceConfig) {
+    cfg.service(api::article_api::get)
+        .service(api::article_api::create)
+        .service(api::article_api::update)
+        .service(api::article_api::delete)
+        .service(api::article_api::list);
 }

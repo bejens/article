@@ -15,7 +15,7 @@ pub struct Article {
     pub modifier: Option<i64>,
 }
 
-#[derive(Debug, FromForm)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct ArticleListParams {
     pub page: i64,
     pub size: i64,
