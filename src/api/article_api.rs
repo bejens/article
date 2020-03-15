@@ -1,7 +1,5 @@
 use crate::entity::article::Article;
 use crate::entity::article::ArticleListParams;
-use crate::entity::page::Page;
-use crate::errors::article_error::ArticleError;
 use crate::service::article_service::ArticleService;
 use actix_web::{get, post, delete, put, web, Responder, HttpResponse};
 

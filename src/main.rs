@@ -16,7 +16,7 @@ mod util;
 #[actix_rt::main]
 async fn main() -> std::io::Result<()> {
 
-    std::env::set_var("RUST_LOG", "actix_web=info");
+    std::env::set_var("RUST_LOG", "actix_web=debug");
     env_logger::init();
 
     HttpServer::new(|| {
